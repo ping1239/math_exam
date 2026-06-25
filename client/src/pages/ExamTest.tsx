@@ -99,6 +99,13 @@ function MathText({ text }: { text: string }) {
   return <>{renderMathParts(text)}</>;
 }
 
+function resolveUrl(path: string) {
+  if (path.startsWith('/')) {
+    return import.meta.env.BASE_URL.replace(/\/$/, '') + path;
+  }
+  return path;
+}
+
 function MathPre({ text }: { text: string }) {
   return (
     <pre style={{ fontFamily: 'inherit', whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: 'inherit' }}>
@@ -295,7 +302,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
             <span style="background: #d4a574; color: white; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 11px;">${q.score}점</span>
           </div>
           <p style="margin: 10px 0; font-size: 13px; line-height: 1.5; font-weight: 500;">${renderMathToHTML(q.text)}</p>
-          ${q.imageUrl ? `<div style="margin: 10px 0; text-align: center;"><img src="${q.imageUrl}" style="max-width: 100%; max-height: 250px; border: 1px solid #ddd; border-radius: 4px;" alt="첨부 이미지" /></div>` : ''}
+          ${q.imageUrl ? `<div style="margin: 10px 0; text-align: center;"><img src="${resolveUrl(q.imageUrl)}" style="max-width: 100%; max-height: 250px; border: 1px solid #ddd; border-radius: 4px;" alt="첨부 이미지" /></div>` : ''}
           <div style="margin-top: 10px;">${optionsHTML}</div>
         </div>
       `;
@@ -734,7 +741,7 @@ const QuestionCard = forwardRef<HTMLDivElement, QuestionCardProps>(
 
           {q.imageUrl && (
             <div className="mb-5 flex justify-center">
-              <img src={q.imageUrl} alt="문제 첨부 이미지" className="max-w-full h-auto rounded-lg shadow-sm border" style={{ maxHeight: '250px', borderColor: 'oklch(0.93 0.004 250)' }} />
+              <img src={resolveUrl(q.imageUrl)} alt="문제 첨부 이미지" className="max-w-full h-auto rounded-lg shadow-sm border" style={{ maxHeight: '250px', borderColor: 'oklch(0.93 0.004 250)' }} />
             </div>
           )}
 
