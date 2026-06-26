@@ -36,9 +36,10 @@ function renderMathParts(text: string): React.ReactNode[] {
   const fractionRegex = /\[frac:([^\]]+)\]/g;
   const supRegex = /\[sup:([^\]]+)\]/g;
   const subRegex = /\[sub:([^\]]+)\]/g;
+  const dotRegex = /\[dot:([^\]]+)\]/g;
 
   let lastIndex = 0;
-  const matches: Array<{ type: 'frac' | 'sup' | 'sub'; match: RegExpExecArray; index: number }> = [];
+  const matches: Array<{ type: 'frac' | 'sup' | 'sub' | 'dot'; match: RegExpExecArray; index: number }> = [];
 
   let match;
   fractionRegex.lastIndex = 0;
@@ -52,6 +53,10 @@ function renderMathParts(text: string): React.ReactNode[] {
   subRegex.lastIndex = 0;
   while ((match = subRegex.exec(text))) {
     matches.push({ type: 'sub', match, index: match.index });
+  }
+  dotRegex.lastIndex = 0;
+  while ((match = dotRegex.exec(text))) {
+    matches.push({ type: 'dot', match, index: match.index });
   }
 
   matches.sort((a, b) => a.index - b.index);
@@ -82,6 +87,13 @@ function renderMathParts(text: string): React.ReactNode[] {
         <sub key={key++} style={{ fontSize: '0.8em' }}>
           {content}
         </sub>
+      );
+    } else if (type === 'dot') {
+      parts.push(
+        <span key={key++} style={{ position: 'relative', display: 'inline-block' }}>
+          <span style={{ position: 'absolute', top: '-0.6em', left: 0, right: 0, textAlign: 'center', lineHeight: 1 }}>·</span>
+          <span>{content}</span>
+        </span>
       );
     }
 
@@ -162,6 +174,12 @@ export default function ExamTest({ examId }: ExamTestProps) {
           score = mod.TOTAL_SCORE;
         } else if (examId === 'math-2024-05') {
           const mod = await import('@/lib/examData5');
+          data = mod.questions;
+          title = mod.EXAM_TITLE;
+          subtitle = mod.EXAM_SUBTITLE;
+          score = mod.TOTAL_SCORE;
+        } else if (examId === 'math-2024-06') {
+          const mod = await import('@/lib/examData6');
           data = mod.questions;
           title = mod.EXAM_TITLE;
           subtitle = mod.EXAM_SUBTITLE;
@@ -270,6 +288,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
       // Then process superscripts and subscripts
       result = result.replace(/\[sup:([^\]]+)\]/g, '<sup>$1</sup>');
       result = result.replace(/\[sub:([^\]]+)\]/g, '<sub>$1</sub>');
+      result = result.replace(/\[dot:([^\]]+)\]/g, '<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>$1</span></span>');
       return result;
     };
 

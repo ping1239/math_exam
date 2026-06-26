@@ -57,6 +57,15 @@ export const EXAM_CATALOG: ExamMetadata[] = [
     difficulty: 'medium',
     questionCount: 20,
   },
+  {
+    id: 'math-2024-06',
+    title: '교과서 문제',
+    subtitle: '중학교 2학년 수학 교과서 변형 문제',
+    totalScore: 268,
+    description: '범위: 수와 식, 일차부등식과 연립일차방정식, 일차함수',
+    difficulty: 'medium',
+    questionCount: 55,
+  },
 ];
 
 export const getExamById = (id: string): ExamMetadata | undefined => {
