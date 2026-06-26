@@ -28,93 +28,123 @@ import type { Question, QuestionType } from '@/lib/examData';
 import React from 'react';
 
 // ─── Math Text Renderer ───────────────────────────────────────────────────────
+
+// Find the matching closing bracket for a tag starting at pos (pos points to the '[')
+function findClosingBracket(text: string, pos: number): number {
+  let depth = 0;
+  for (let i = pos; i < text.length; i++) {
+    if (text[i] === '[') depth++;
+    else if (text[i] === ']') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1; // not found
+}
+
+// Parse all top-level tags from text, returning an array of segments
+type Segment = { type: 'text'; value: string } | { type: 'tag'; tagName: string; content: string };
+
+function parseSegments(text: string): Segment[] {
+  const segments: Segment[] = [];
+  let i = 0;
+  const tagPrefixes = ['frac:', 'sup:', 'sub:', 'dot:'];
+
+  while (i < text.length) {
+    // Try to match a tag at position i
+    let matched = false;
+    if (text[i] === '[') {
+      for (const prefix of tagPrefixes) {
+        if (text.substring(i + 1, i + 1 + prefix.length) === prefix) {
+          const closingIdx = findClosingBracket(text, i);
+          if (closingIdx !== -1) {
+            const inner = text.substring(i + 1 + prefix.length, closingIdx);
+            const tagName = prefix.slice(0, -1); // remove trailing ':'
+            segments.push({ type: 'tag', tagName, content: inner });
+            i = closingIdx + 1;
+            matched = true;
+          }
+          break;
+        }
+      }
+    }
+    if (!matched) {
+      // Accumulate plain text
+      const last = segments[segments.length - 1];
+      if (last && last.type === 'text') {
+        last.value += text[i];
+      } else {
+        segments.push({ type: 'text', value: text[i] });
+      }
+      i++;
+    }
+  }
+  return segments;
+}
+
 function renderMathParts(text: string): React.ReactNode[] {
+  const segments = parseSegments(text);
   const parts: React.ReactNode[] = [];
-  let remaining = text;
   let key = 0;
 
-  const fractionRegex = /\[frac:([^\]]+)\]/g;
-  const supRegex = /\[sup:([^\]]+)\]/g;
-  const subRegex = /\[sub:([^\]]+)\]/g;
-  const dotRegex = /\[dot:([^\]]+)\]/g;
-
-  let lastIndex = 0;
-  const matches: Array<{ type: 'frac' | 'sup' | 'sub' | 'dot'; match: RegExpExecArray; index: number }> = [];
-
-  let match;
-  fractionRegex.lastIndex = 0;
-  while ((match = fractionRegex.exec(text))) {
-    matches.push({ type: 'frac', match, index: match.index });
-  }
-  supRegex.lastIndex = 0;
-  while ((match = supRegex.exec(text))) {
-    matches.push({ type: 'sup', match, index: match.index });
-  }
-  subRegex.lastIndex = 0;
-  while ((match = subRegex.exec(text))) {
-    matches.push({ type: 'sub', match, index: match.index });
-  }
-  dotRegex.lastIndex = 0;
-  while ((match = dotRegex.exec(text))) {
-    matches.push({ type: 'dot', match, index: match.index });
-  }
-
-  matches.sort((a, b) => a.index - b.index);
-
-  for (const { type, match } of matches) {
-    if (match.index > lastIndex) {
-      const rawStr = text.slice(lastIndex, match.index);
-      const splitByNewline = rawStr.split('\n');
+  for (const seg of segments) {
+    if (seg.type === 'text') {
+      const splitByNewline = seg.value.split('\n');
       splitByNewline.forEach((line, i) => {
         if (line) parts.push(<span key={key++}>{line}</span>);
         if (i < splitByNewline.length - 1) parts.push(<br key={key++} />);
       });
+    } else {
+      const { tagName, content } = seg;
+      if (tagName === 'frac') {
+        // Find the top-level '/' that separates numerator from denominator
+        let slashIdx = -1;
+        let depth = 0;
+        for (let j = 0; j < content.length; j++) {
+          if (content[j] === '[') depth++;
+          else if (content[j] === ']') depth--;
+          else if (content[j] === '/' && depth === 0) {
+            slashIdx = j;
+            break;
+          }
+        }
+        if (slashIdx === -1) {
+          parts.push(<span key={key++}>{renderMathParts(content)}</span>);
+        } else {
+          const num = content.substring(0, slashIdx);
+          const den = content.substring(slashIdx + 1);
+          parts.push(
+            <span key={key++} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', margin: '0 2px', verticalAlign: 'middle' }}>
+              <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{renderMathParts(num)}</span>
+              <span style={{ borderTop: '1px solid currentColor', width: '100%', margin: '1px 0' }}></span>
+              <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{renderMathParts(den)}</span>
+            </span>
+          );
+        }
+      } else if (tagName === 'sup') {
+        parts.push(
+          <sup key={key++} style={{ fontSize: '0.8em' }}>
+            {renderMathParts(content)}
+          </sup>
+        );
+      } else if (tagName === 'sub') {
+        parts.push(
+          <sub key={key++} style={{ fontSize: '0.8em' }}>
+            {renderMathParts(content)}
+          </sub>
+        );
+      } else if (tagName === 'dot') {
+        parts.push(
+          <span key={key++} style={{ position: 'relative', display: 'inline-block' }}>
+            <span style={{ position: 'absolute', top: '-0.6em', left: 0, right: 0, textAlign: 'center', lineHeight: 1 }}>·</span>
+            <span>{renderMathParts(content)}</span>
+          </span>
+        );
+      }
     }
-
-    const content = match[1];
-    if (type === 'frac') {
-      const [num, den] = content.split('/');
-      parts.push(
-        <span key={key++} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', margin: '0 2px', verticalAlign: 'middle' }}>
-          <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{renderMathParts(num)}</span>
-          <span style={{ borderTop: '1px solid currentColor', width: '100%', margin: '1px 0' }}></span>
-          <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{renderMathParts(den)}</span>
-        </span>
-      );
-    } else if (type === 'sup') {
-      parts.push(
-        <sup key={key++} style={{ fontSize: '0.8em' }}>
-          {renderMathParts(content)}
-        </sup>
-      );
-    } else if (type === 'sub') {
-      parts.push(
-        <sub key={key++} style={{ fontSize: '0.8em' }}>
-          {renderMathParts(content)}
-        </sub>
-      );
-    } else if (type === 'dot') {
-      parts.push(
-        <span key={key++} style={{ position: 'relative', display: 'inline-block' }}>
-          <span style={{ position: 'absolute', top: '-0.6em', left: 0, right: 0, textAlign: 'center', lineHeight: 1 }}>·</span>
-          <span>{renderMathParts(content)}</span>
-        </span>
-      );
-    }
-
-    lastIndex = match.index + match[0].length;
   }
 
-  if (lastIndex < text.length) {
-    const rawStr = text.slice(lastIndex);
-    const splitByNewline = rawStr.split('\n');
-    splitByNewline.forEach((line, i) => {
-      if (line) parts.push(<span key={key++}>{line}</span>);
-      if (i < splitByNewline.length - 1) parts.push(<br key={key++} />);
-    });
-  }
-
-  return parts.length > 0 ? parts : [text];
+  return parts.length > 0 ? parts : [<span key={0}>{text}</span>];
 }
 
 function MathText({ text }: { text: string }) {
@@ -287,19 +317,39 @@ export default function ExamTest({ examId }: ExamTestProps) {
     };
 
     const renderMathToHTML = (text: string): string => {
-      // Process fractions first (may contain nested sup/sub)
-      let result = text.replace(/\[frac:([^\]]+)\]/g, (_, content) => {
-        const slashIdx = content.indexOf('/');
-        if (slashIdx === -1) return content;
-        const num = content.substring(0, slashIdx);
-        const den = content.substring(slashIdx + 1);
-        return `<span class="print-frac"><span class="num">${num}</span><span class="den">${den}</span></span>`;
-      });
-      // Then process superscripts and subscripts
-      result = result.replace(/\[sup:([^\]]+)\]/g, '<sup>$1</sup>');
-      result = result.replace(/\[sub:([^\]]+)\]/g, '<sub>$1</sub>');
-      result = result.replace(/\[dot:([^\]]+)\]/g, '<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>$1</span></span>');
-      return result;
+      // Bracket-aware parser for print HTML
+      const segs = parseSegments(text);
+      let html = '';
+      for (const seg of segs) {
+        if (seg.type === 'text') {
+          html += seg.value.replace(/\n/g, '<br/>');
+        } else {
+          const { tagName, content } = seg;
+          if (tagName === 'frac') {
+            let slashIdx = -1;
+            let depth = 0;
+            for (let j = 0; j < content.length; j++) {
+              if (content[j] === '[') depth++;
+              else if (content[j] === ']') depth--;
+              else if (content[j] === '/' && depth === 0) { slashIdx = j; break; }
+            }
+            if (slashIdx === -1) {
+              html += renderMathToHTML(content);
+            } else {
+              const num = content.substring(0, slashIdx);
+              const den = content.substring(slashIdx + 1);
+              html += `<span class="print-frac"><span class="num">${renderMathToHTML(num)}</span><span class="den">${renderMathToHTML(den)}</span></span>`;
+            }
+          } else if (tagName === 'sup') {
+            html += `<sup>${renderMathToHTML(content)}</sup>`;
+          } else if (tagName === 'sub') {
+            html += `<sub>${renderMathToHTML(content)}</sub>`;
+          } else if (tagName === 'dot') {
+            html += `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
+          }
+        }
+      }
+      return html;
     };
 
     const questionHTML = questions.map((q) => {
