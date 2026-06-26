@@ -63,36 +63,41 @@ function renderMathParts(text: string): React.ReactNode[] {
 
   for (const { type, match } of matches) {
     if (match.index > lastIndex) {
-      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+      const rawStr = text.slice(lastIndex, match.index);
+      const splitByNewline = rawStr.split('\n');
+      splitByNewline.forEach((line, i) => {
+        if (line) parts.push(<span key={key++}>{line}</span>);
+        if (i < splitByNewline.length - 1) parts.push(<br key={key++} />);
+      });
     }
 
     const content = match[1];
     if (type === 'frac') {
       const [num, den] = content.split('/');
       parts.push(
-        <span key={key++} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', margin: '0 2px' }}>
-          <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{num}</span>
-          <span style={{ borderTop: '1px solid currentColor', width: '100%' }}></span>
-          <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{den}</span>
+        <span key={key++} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', margin: '0 2px', verticalAlign: 'middle' }}>
+          <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{renderMathParts(num)}</span>
+          <span style={{ borderTop: '1px solid currentColor', width: '100%', margin: '1px 0' }}></span>
+          <span style={{ fontSize: '0.75em', lineHeight: '1' }}>{renderMathParts(den)}</span>
         </span>
       );
     } else if (type === 'sup') {
       parts.push(
         <sup key={key++} style={{ fontSize: '0.8em' }}>
-          {content}
+          {renderMathParts(content)}
         </sup>
       );
     } else if (type === 'sub') {
       parts.push(
         <sub key={key++} style={{ fontSize: '0.8em' }}>
-          {content}
+          {renderMathParts(content)}
         </sub>
       );
     } else if (type === 'dot') {
       parts.push(
         <span key={key++} style={{ position: 'relative', display: 'inline-block' }}>
           <span style={{ position: 'absolute', top: '-0.6em', left: 0, right: 0, textAlign: 'center', lineHeight: 1 }}>·</span>
-          <span>{content}</span>
+          <span>{renderMathParts(content)}</span>
         </span>
       );
     }
@@ -101,7 +106,12 @@ function renderMathParts(text: string): React.ReactNode[] {
   }
 
   if (lastIndex < text.length) {
-    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+    const rawStr = text.slice(lastIndex);
+    const splitByNewline = rawStr.split('\n');
+    splitByNewline.forEach((line, i) => {
+      if (line) parts.push(<span key={key++}>{line}</span>);
+      if (i < splitByNewline.length - 1) parts.push(<br key={key++} />);
+    });
   }
 
   return parts.length > 0 ? parts : [text];
