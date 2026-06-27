@@ -224,6 +224,12 @@ export default function ExamTest({ examId }: ExamTestProps) {
           title = mod.EXAM_TITLE;
           subtitle = mod.EXAM_SUBTITLE;
           score = mod.TOTAL_SCORE;
+        } else if (examId === 'math-2024-07') {
+          const mod = await import('@/lib/examData7');
+          data = mod.questions;
+          title = mod.EXAM_TITLE;
+          subtitle = mod.EXAM_SUBTITLE;
+          score = mod.TOTAL_SCORE;
         } else {
           throw new Error('Unknown exam ID');
         }
