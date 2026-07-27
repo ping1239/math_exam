@@ -390,12 +390,12 @@ export default function ExamTest({ examId }: ExamTestProps) {
         optionsHTML = q.subQuestions.map((sub) => 
           `<div style="margin: 12px 0;">
             <p style="font-weight: bold; margin: 8px 0; font-size: 13px;">${sub.label} ${renderMathToHTML(sub.text)}</p>
-            <div style="padding: 8px; border-bottom: 2px solid #333; min-height: ${sub.id.endsWith('-2') ? '100px' : '50px'};"></div>
+            <div style="padding: 8px; border-bottom: 2px solid #333; height: ${sub.id.endsWith('-2') ? '100px' : '50px'};"></div>
           </div>`
         ).join('');
       }
       return `
-        <div style="page-break-inside: avoid; margin-bottom: 20px; padding: 14px; border: 1px solid #ccc; border-radius: 4px;">
+        <div style="${q.type === 'essay' ? '' : 'page-break-inside: avoid; break-inside: avoid;'} margin-bottom: 20px; padding: 14px; border: 1px solid #ccc; border-radius: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
             <div>
               <span style="display: inline-block; width: 22px; height: 22px; background: #1e3a5f; color: white; border-radius: 50%; text-align: center; line-height: 22px; font-weight: bold; margin-right: 6px; font-size: 12px;">${q.id}</span>
