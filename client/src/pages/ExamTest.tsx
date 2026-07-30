@@ -390,7 +390,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
         optionsHTML = q.subQuestions.map((sub) => 
           `<div style="margin: 12px 0;">
             <p style="font-weight: bold; margin: 8px 0; font-size: 16px;">${sub.label} ${renderMathToHTML(sub.text)}</p>
-            <div style="padding: 8px; border-bottom: 2px solid #333; height: ${sub.id.endsWith('-2') ? '100px' : '50px'};">&nbsp;</div>
+            <div style="margin-top: 8px; border-bottom: 1px solid #333; min-height: 24px;">&nbsp;</div>
           </div>`
         ).join('');
       }
