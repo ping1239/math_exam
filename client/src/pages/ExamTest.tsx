@@ -385,17 +385,17 @@ export default function ExamTest({ examId }: ExamTestProps) {
           </div>`
         ).join('');
       } else if (q.type === 'short') {
-        optionsHTML = `<div style="margin: 12px 0; padding: 8px; border-bottom: 2px solid #333; min-height: 30px;">&nbsp;</div>`;
+        optionsHTML = `<div style="margin: 12px 0; padding-bottom: 8px; border-bottom: 1px solid #333;"></div>`;
       } else if (q.type === 'essay' && q.subQuestions) {
         optionsHTML = q.subQuestions.map((sub) => 
           `<div style="margin: 12px 0;">
             <p style="font-weight: bold; margin: 8px 0; font-size: 16px;">${sub.label} ${renderMathToHTML(sub.text)}</p>
-            <div style="margin-top: 8px; border-bottom: 1px solid #333; min-height: 24px;">&nbsp;</div>
+            <div style="padding-bottom: 8px; border-bottom: 1px solid #333;"></div>
           </div>`
         ).join('');
       }
       return `
-        <div style="${q.type === 'essay' ? '' : 'page-break-inside: avoid; break-inside: avoid;'} margin-bottom: 24px; padding: 16px; border: 1px solid #ccc; border-radius: 4px;">
+        <div style="${q.type === 'essay' ? 'break-inside: auto; page-break-inside: auto;' : 'page-break-inside: avoid; break-inside: avoid;'} margin-bottom: 24px; padding: 16px; border: 1px solid #ccc; border-radius: 4px; overflow: hidden;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
             <div>
               <span style="display: inline-block; width: 28px; height: 28px; background: #1e3a5f; color: white; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; margin-right: 8px; font-size: 15px;">${q.id}</span>
@@ -404,7 +404,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
             </div>
             <span style="background: #d4a574; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 14px;">${q.score}점</span>
           </div>
-          <p style="margin: 12px 0; font-size: 16px; line-height: 1.6; font-weight: 500;">${renderMathToHTML(q.text)}</p>
+          <p style="margin: 12px 0; font-size: 16px; line-height: 1.6; font-weight: 500; word-break: keep-all;">${renderMathToHTML(q.text)}</p>
           ${q.imageUrl ? `<div style="margin: 12px 0; text-align: center;"><img src="${resolveUrl(q.imageUrl)}" style="max-width: 100%; max-height: 300px; border: 1px solid #ddd; border-radius: 4px;" alt="첨부 이미지" /></div>` : ''}
           <div style="margin-top: 12px;">${optionsHTML}</div>
         </div>
@@ -419,8 +419,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
         <title>${examTitle}</title>
         <style>
           @page {
-            size: A4;
-            margin: 15mm 15mm;
+            margin: 15mm;
           }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -429,6 +428,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
             line-height: 1.6;
             background: white;
             font-size: 16px;
+            width: 100%;
           }
           .header {
             text-align: center;
@@ -448,8 +448,8 @@ export default function ExamTest({ examId }: ExamTestProps) {
           .info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 16px;
-            font-size: 11px;
+            margin-bottom: 20px;
+            font-size: 15px;
             color: #666;
           }
           .questions { margin-top: 12px; }
