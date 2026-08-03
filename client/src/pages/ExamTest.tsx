@@ -429,9 +429,13 @@ export default function ExamTest({ examId }: ExamTestProps) {
             line-height: 1.6;
             background: white;
             font-size: 22px;
-            width: 100%;
+            
+            /* "저 상태 그대로 화면만 확대를 해가지고" -> Literal Ctrl ++ Zoom implementation */
+            zoom: 1.45;
+            width: 68.9%; /* 100 / 1.45 = 68.9% so it perfectly fits the A4 width after scaling */
+            
             /* Add padding to the body instead of page margin to keep content away from edges */
-            padding: 20mm;
+            padding: 15mm;
           }
           .header {
             text-align: center;
