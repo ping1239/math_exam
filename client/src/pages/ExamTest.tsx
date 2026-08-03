@@ -395,7 +395,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
         ).join('');
       }
       return `
-        <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 32px; padding: 24px; border: 2px solid #ccc; border-radius: 8px; overflow: hidden;">
+        <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 32px; padding: 24px; border: 2px solid #ccc; border-radius: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
             <div>
               <span style="display: inline-block; width: 36px; height: 36px; background: #1e3a5f; color: white; border-radius: 50%; text-align: center; line-height: 36px; font-weight: bold; margin-right: 12px; font-size: 18px;">${q.id}</span>
@@ -419,7 +419,8 @@ export default function ExamTest({ examId }: ExamTestProps) {
         <title>${examTitle}</title>
         <style>
           @page {
-            margin: 15mm;
+            /* Set margin to 0 to completely disable browser default headers/footers (time, URL, title) */
+            margin: 0;
           }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -428,8 +429,9 @@ export default function ExamTest({ examId }: ExamTestProps) {
             line-height: 1.6;
             background: white;
             font-size: 22px;
-            width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            /* Add padding to the body instead of page margin to keep content away from edges */
+            padding: 20mm;
           }
           .header {
             text-align: center;
