@@ -380,15 +380,15 @@ export default function ExamTest({ examId }: ExamTestProps) {
       let optionsHTML = '';
       if (q.type === 'multiple' && q.options) {
         optionsHTML = q.options.map((opt) => 
-          `<div style="margin: 6px 0; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+          `<div style="page-break-inside: avoid; break-inside: avoid; margin: 6px 0; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             <strong>${opt.label}</strong> ${renderMathToHTML(opt.text)}
           </div>`
         ).join('');
       } else if (q.type === 'short') {
-        optionsHTML = `<div style="margin: 20px 0 10px 0; padding-bottom: 24px; border-bottom: 1px solid #333;"></div>`;
+        optionsHTML = `<div style="page-break-inside: avoid; break-inside: avoid; margin: 20px 0 10px 0; padding-bottom: 24px; border-bottom: 1px solid #333;"></div>`;
       } else if (q.type === 'essay' && q.subQuestions) {
         optionsHTML = q.subQuestions.map((sub) => 
-          `<div style="margin: 10px 0;">
+          `<div style="page-break-inside: avoid; break-inside: avoid; margin: 10px 0;">
             <p style="font-weight: bold; margin: 6px 0; font-size: 14px;">${sub.label} ${renderMathToHTML(sub.text)}</p>
             <div style="margin-top: 6px; min-height: 60px; border: 1px solid #ccc; border-radius: 6px;"></div>
           </div>`
@@ -405,7 +405,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
             <span style="color: #888; font-weight: bold; font-size: 12px;">${q.score}점</span>
           </div>
           <p style="margin: 10px 0; font-size: 16px; line-height: 1.6; font-weight: 600; word-break: keep-all;">${renderMathToHTML(q.text)}</p>
-          ${q.imageUrl ? `<div style="margin: 16px 0; text-align: center;"><img src="${resolveUrl(q.imageUrl)}" style="max-width: 100%; max-height: 400px; border: 1px solid #ddd; border-radius: 6px;" alt="첨부 이미지" /></div>` : ''}
+          ${q.imageUrl ? `<div style="page-break-inside: avoid; break-inside: avoid; margin: 16px 0; text-align: center;"><img src="${resolveUrl(q.imageUrl)}" style="max-width: 100%; max-height: 400px; border: 1px solid #ddd; border-radius: 6px;" alt="첨부 이미지" /></div>` : ''}
           <div style="margin-top: 16px;">${optionsHTML}</div>
         </div>
       `;
