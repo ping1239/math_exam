@@ -430,15 +430,15 @@ export default function ExamTest({ examId }: ExamTestProps) {
             background: white;
             font-size: 22px;
             
-            /* To perfectly emulate Ctrl++ scaling on an A4 paper without Chrome's 1-page-shrink bug:
-               Set a fixed pixel width that is narrower than a typical high-res screen (e.g. 768px),
-               Chrome will take this 768px block and physically scale it up to fit the ~1000px A4 width,
-               naturally magnifying the entire content (fonts, boxes, spaces) by ~1.3x. */
-            width: 794px; /* A4 width at 96 DPI */
+            /* To force Chrome to physically magnify the document on an A4 paper (Ctrl++ effect):
+               We give it a very narrow fixed width (600px). Chrome's "Shrink to Fit" algorithm 
+               will actually SCALE UP this narrow block to fill the ~1000px A4 width, 
+               resulting in a massive, clean zoom of the entire layout. */
+            width: 600px;
             margin: 0 auto;
             
             /* Keep padding to avoid edges */
-            padding: 15mm;
+            padding: 10mm;
           }
           .header {
             text-align: center;
