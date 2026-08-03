@@ -428,7 +428,8 @@ export default function ExamTest({ examId }: ExamTestProps) {
             line-height: 1.6;
             background: white;
             font-size: 22px;
-            width: 100%;
+            width: 800px;
+            margin: 0 auto;
           }
           .header {
             text-align: center;
