@@ -419,8 +419,8 @@ export default function ExamTest({ examId }: ExamTestProps) {
         <title>${examTitle}</title>
         <style>
           @page {
-            /* Set margin to 0 to completely disable browser default headers/footers (time, URL, title) */
-            margin: 0;
+            size: A4;
+            margin: 15mm; /* Restore standard margins */
           }
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -428,17 +428,8 @@ export default function ExamTest({ examId }: ExamTestProps) {
             color: #222;
             line-height: 1.6;
             background: white;
-            font-size: 22px;
-            
-            /* To force Chrome to physically magnify the document on an A4 paper (Ctrl++ effect):
-               We give it a very narrow fixed width (600px). Chrome's "Shrink to Fit" algorithm 
-               will actually SCALE UP this narrow block to fill the ~1000px A4 width, 
-               resulting in a massive, clean zoom of the entire layout. */
-            width: 600px;
-            margin: 0 auto;
-            
-            /* Keep padding to avoid edges */
-            padding: 10mm;
+            font-size: 22px; /* Massive font size to emulate zoom */
+            width: 100%; /* Fill the A4 width perfectly */
           }
           .header {
             text-align: center;
