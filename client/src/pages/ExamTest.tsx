@@ -430,11 +430,14 @@ export default function ExamTest({ examId }: ExamTestProps) {
             background: white;
             font-size: 22px;
             
-            /* "저 상태 그대로 화면만 확대를 해가지고" -> Literal Ctrl ++ Zoom implementation */
-            zoom: 1.45;
-            width: 68.9%; /* 100 / 1.45 = 68.9% so it perfectly fits the A4 width after scaling */
+            /* To perfectly emulate Ctrl++ scaling on an A4 paper without Chrome's 1-page-shrink bug:
+               Set a fixed pixel width that is narrower than a typical high-res screen (e.g. 768px),
+               Chrome will take this 768px block and physically scale it up to fit the ~1000px A4 width,
+               naturally magnifying the entire content (fonts, boxes, spaces) by ~1.3x. */
+            width: 794px; /* A4 width at 96 DPI */
+            margin: 0 auto;
             
-            /* Add padding to the body instead of page margin to keep content away from edges */
+            /* Keep padding to avoid edges */
             padding: 15mm;
           }
           .header {
