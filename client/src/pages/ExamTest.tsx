@@ -380,7 +380,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
       let optionsHTML = '';
       if (q.type === 'multiple' && q.options) {
         optionsHTML = q.options.map((opt) => 
-          `<div style="margin: 8px 0; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px;">
+          `<div style="margin: 6px 0; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             <strong>${opt.label}</strong> ${renderMathToHTML(opt.text)}
           </div>`
         ).join('');
@@ -388,23 +388,23 @@ export default function ExamTest({ examId }: ExamTestProps) {
         optionsHTML = `<div style="margin: 20px 0 10px 0; padding-bottom: 24px; border-bottom: 1px solid #333;"></div>`;
       } else if (q.type === 'essay' && q.subQuestions) {
         optionsHTML = q.subQuestions.map((sub) => 
-          `<div style="margin: 12px 0;">
-            <p style="font-weight: bold; margin: 8px 0; font-size: 16px;">${sub.label} ${renderMathToHTML(sub.text)}</p>
-            <div style="margin-top: 8px; min-height: 80px; border: 1px solid #ccc; border-radius: 6px;"></div>
+          `<div style="margin: 10px 0;">
+            <p style="font-weight: bold; margin: 6px 0; font-size: 14px;">${sub.label} ${renderMathToHTML(sub.text)}</p>
+            <div style="margin-top: 6px; min-height: 60px; border: 1px solid #ccc; border-radius: 6px;"></div>
           </div>`
         ).join('');
       }
       return `
-        <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 24px; padding: 18px; border: 2px solid #ccc; border-radius: 8px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+        <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 20px; padding: 16px; border: 2px solid #ccc; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
             <div style="display: flex; align-items: center;">
-              <span style="font-size: 18px; font-weight: bold; color: #888; margin-right: 10px; font-family: serif;">${q.id}</span>
-              <span style="background: rgba(71, 20, 255, 0.08); color: #4714ff; padding: 3px 8px; border-radius: 6px; font-size: 14px; margin-right: 8px; font-weight: bold;">${getTypeLabel(q.type)}</span>
-              <span style="font-size: 14px; color: #555; font-weight: bold;">${q.topic}</span>
+              <span style="font-size: 16px; font-weight: bold; color: #888; margin-right: 8px; font-family: serif;">${q.id}</span>
+              <span style="background: rgba(71, 20, 255, 0.08); color: #4714ff; padding: 3px 6px; border-radius: 6px; font-size: 12px; margin-right: 6px; font-weight: bold;">${getTypeLabel(q.type)}</span>
+              <span style="font-size: 12px; color: #555; font-weight: bold;">${q.topic}</span>
             </div>
-            <span style="color: #888; font-weight: bold; font-size: 14px;">${q.score}점</span>
+            <span style="color: #888; font-weight: bold; font-size: 12px;">${q.score}점</span>
           </div>
-          <p style="margin: 12px 0; font-size: 18px; line-height: 1.6; font-weight: 600; word-break: keep-all;">${renderMathToHTML(q.text)}</p>
+          <p style="margin: 10px 0; font-size: 16px; line-height: 1.6; font-weight: 600; word-break: keep-all;">${renderMathToHTML(q.text)}</p>
           ${q.imageUrl ? `<div style="margin: 16px 0; text-align: center;"><img src="${resolveUrl(q.imageUrl)}" style="max-width: 100%; max-height: 400px; border: 1px solid #ddd; border-radius: 6px;" alt="첨부 이미지" /></div>` : ''}
           <div style="margin-top: 16px;">${optionsHTML}</div>
         </div>
@@ -428,7 +428,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
             color: #222;
             line-height: 1.6;
             background: white;
-            font-size: 18px; /* Reduced from 20px */
+            font-size: 16px; /* Reduced from 18px */
             width: 100%; /* Fill the A4 width perfectly */
           }
           .header {
@@ -438,20 +438,20 @@ export default function ExamTest({ examId }: ExamTestProps) {
             border-bottom: 3px solid #1e3a5f;
           }
           .header h1 {
-            font-size: 24px;
+            font-size: 20px;
             margin-bottom: 6px;
             color: #1e3a5f;
           }
           .header p {
-            font-size: 14px;
+            font-size: 12px;
             color: #666;
             font-weight: bold;
           }
           .info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 24px;
-            font-size: 14px;
+            margin-bottom: 20px;
+            font-size: 12px;
             font-weight: bold;
           }
           .questions { margin-top: 12px; }
