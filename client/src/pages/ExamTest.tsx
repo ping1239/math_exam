@@ -546,47 +546,41 @@ export default function ExamTest({ examId }: ExamTestProps) {
     };
 
     const renderMathToHTML = (text: string): string => {
+      // Bracket-aware parser for print HTML
+      const segs = parseSegments(text);
       let html = '';
-      const regex = /\\[(.*?)\\]/g;
-      let lastIndex = 0;
-      let match;
-      while ((match = regex.exec(text)) !== null) {
-        html += text.substring(lastIndex, match.index);
-        const inner = match[1];
-        html += parsePrintMathTag(inner);
-        lastIndex = regex.lastIndex;
-      }
-      html += text.substring(lastIndex);
-      return html.replace(/\\n/g, '<br/>').replace(/\\r/g, '');
-    };
-
-    const parsePrintMathTag = (inner: string): string => {
-      const colonIdx = inner.indexOf(':');
-      if (colonIdx === -1) return `[${inner}]`;
-      const tagName = inner.substring(0, colonIdx).trim();
-      const content = inner.substring(colonIdx + 1).trim();
-      if (tagName === 'frac') {
-        let slashIdx = -1;
-        let depth = 0;
-        for (let j = 0; j < content.length; j++) {
-          if (content[j] === '[') depth++;
-          else if (content[j] === ']') depth--;
-          else if (content[j] === '/' && depth === 0) { slashIdx = j; break; }
+      for (const seg of segs) {
+        if (seg.type === 'text') {
+          html += seg.value.replace(/\n/g, '<br/>');
+        } else {
+          const { tagName, content } = seg;
+          if (tagName === 'frac') {
+            let slashIdx = -1;
+            let depth = 0;
+            for (let j = 0; j < content.length; j++) {
+              if (content[j] === '[') depth++;
+              else if (content[j] === ']') depth--;
+              else if (content[j] === '/' && depth === 0) { slashIdx = j; break; }
+            }
+            if (slashIdx === -1) {
+              html += renderMathToHTML(content);
+            } else {
+              const num = content.substring(0, slashIdx);
+              const den = content.substring(slashIdx + 1);
+              html += `<span class="print-frac"><span class="num">${renderMathToHTML(num)}</span><span class="den">${renderMathToHTML(den)}</span></span>`;
+            }
+          } else if (tagName === 'sup') {
+            html += `<sup>${renderMathToHTML(content)}</sup>`;
+          } else if (tagName === 'sub') {
+            html += `<sub>${renderMathToHTML(content)}</sub>`;
+          } else if (tagName === 'overline') {
+            html += `<span style="text-decoration: overline;">${renderMathToHTML(content)}</span>`;
+          } else if (tagName === 'dot') {
+            html += `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
+          }
         }
-        if (slashIdx === -1) return renderMathToHTML(content);
-        const num = content.substring(0, slashIdx);
-        const den = content.substring(slashIdx + 1);
-        return `<span class="print-frac"><span class="num">${renderMathToHTML(num)}</span><span class="den">${renderMathToHTML(den)}</span></span>`;
-      } else if (tagName === 'sup') {
-        return `<sup>${renderMathToHTML(content)}</sup>`;
-      } else if (tagName === 'sub') {
-        return `<sub>${renderMathToHTML(content)}</sub>`;
-      } else if (tagName === 'overline') {
-          return `<span style="text-decoration: overline;">${renderMathToHTML(content)}</span>`;
-      } else if (tagName === 'dot') {
-        return `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
       }
-      return `[${inner}]`;
+      return html;
     };
 
     const questionHTML = questions.map((q) => {
