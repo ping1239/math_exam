@@ -111,6 +111,14 @@ export const EXAM_CATALOG: ExamMetadata[] = [
     difficulty: 'easy',
     questionCount: 6,
   },
+  {
+    id: 'math-2024-12',
+    title: '중학교 2-2 도형의 닮음 실전 TEST (표준)',
+    date: '2024-05-18',
+    status: 'available',
+    description: '도형의 닮음 단원 표준 난이도 실전 모의고사 24문항',
+    topic: '도형의 닮음'
+  }
 ];
 
 export const getExamById = (id: string): ExamMetadata | undefined => {
