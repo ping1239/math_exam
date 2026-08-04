@@ -497,6 +497,153 @@ export default function ExamTest({ examId }: ExamTestProps) {
     `;
   };
 
+  const handleAnswerPrint = () => {
+    const printWindow = window.open('', '', 'width=900,height=700');
+    if (!printWindow) return;
+    const printContent = generateAnswerPrintHTML();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 300);
+  };
+
+  const generateAnswerPrintHTML = () => {
+    const getTypeLabel = (type: QuestionType): string => {
+      const labels: Record<QuestionType, string> = {
+        multiple: '객관식',
+        short: '서답형',
+        essay: '서술형',
+      };
+      return labels[type];
+    };
+
+    const renderMathToHTML = (text: string): string => {
+      let html = '';
+      const regex = /\\[(.*?)\\]/g;
+      let lastIndex = 0;
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        html += text.substring(lastIndex, match.index);
+        const inner = match[1];
+        html += parsePrintMathTag(inner);
+        lastIndex = regex.lastIndex;
+      }
+      html += text.substring(lastIndex);
+      return html.replace(/\\n/g, '<br/>').replace(/\\r/g, '');
+    };
+
+    const parsePrintMathTag = (inner: string): string => {
+      const colonIdx = inner.indexOf(':');
+      if (colonIdx === -1) return `[${inner}]`;
+      const tagName = inner.substring(0, colonIdx).trim();
+      const content = inner.substring(colonIdx + 1).trim();
+      if (tagName === 'frac') {
+        let slashIdx = -1;
+        let depth = 0;
+        for (let j = 0; j < content.length; j++) {
+          if (content[j] === '[') depth++;
+          else if (content[j] === ']') depth--;
+          else if (content[j] === '/' && depth === 0) { slashIdx = j; break; }
+        }
+        if (slashIdx === -1) return renderMathToHTML(content);
+        const num = content.substring(0, slashIdx);
+        const den = content.substring(slashIdx + 1);
+        return `<span class="print-frac"><span class="num">${renderMathToHTML(num)}</span><span class="den">${renderMathToHTML(den)}</span></span>`;
+      } else if (tagName === 'sup') {
+        return `<sup>${renderMathToHTML(content)}</sup>`;
+      } else if (tagName === 'sub') {
+        return `<sub>${renderMathToHTML(content)}</sub>`;
+      } else if (tagName === 'dot') {
+        return `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
+      }
+      return `[${inner}]`;
+    };
+
+    const questionHTML = questions.map((q) => {
+      return `
+        <div style="page-break-inside: avoid; break-inside: avoid; margin-bottom: 20px; padding: 16px; border: 2px solid #ccc; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div style="display: flex; align-items: center;">
+              <span style="font-size: 16px; font-weight: bold; color: #888; margin-right: 8px; font-family: serif;">${q.id}</span>
+              <span style="background: rgba(71, 20, 255, 0.08); color: #4714ff; padding: 3px 6px; border-radius: 6px; font-size: 12px; margin-right: 6px; font-weight: bold;">${getTypeLabel(q.type)}</span>
+              <span style="font-size: 12px; color: #555; font-weight: bold;">${q.topic}</span>
+            </div>
+            <span style="color: #888; font-weight: bold; font-size: 12px;">${q.score}점</span>
+          </div>
+          <p style="margin: 10px 0; font-size: 16px; line-height: 1.6; font-weight: 600; word-break: keep-all;">${renderMathToHTML(q.text)}</p>
+          ${q.imageUrl ? `<div style="page-break-inside: avoid; break-inside: avoid; margin: 16px 0; text-align: center;"><img src="${resolveUrl(q.imageUrl)}" style="max-width: 100%; max-height: 250px; border: 1px solid #ddd; border-radius: 6px;" alt="첨부 이미지" /></div>` : ''}
+          <div style="margin-top: 16px; padding: 14px; background: rgba(255, 60, 60, 0.04); border-left: 4px solid #ff3c3c; border-radius: 4px;">
+            <div style="font-size: 15px; font-weight: bold; color: #ff3c3c; margin-bottom: 8px;">정답: ${q.answer ? renderMathToHTML(q.answer) : '없음'}</div>
+            ${q.explanation ? `<div style="font-size: 14px; color: #444; line-height: 1.6;"><strong>해설:</strong><br/>${renderMathToHTML(q.explanation.replace(/\n/g, '<br/>'))}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <!DOCTYPE html>
+      <html lang="ko">
+      <head>
+        <meta charset="UTF-8">
+        <title>${examTitle} - 정답 및 해설</title>
+        <style>
+          @page {
+            size: A4;
+            margin: 15mm;
+          }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            font-family: 'Noto Sans KR', Arial, sans-serif;
+            color: #222;
+            line-height: 1.6;
+            background: white;
+            font-size: 16px;
+            width: 100%;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #ff3c3c;
+          }
+          .header h1 {
+            font-size: 20px;
+            margin-bottom: 6px;
+            color: #ff3c3c;
+          }
+          .header p {
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+          }
+          .questions { margin-top: 12px; }
+          .print-frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 2px;
+            line-height: 1.1;
+          }
+          .print-frac .num { border-bottom: 1px solid #333; padding: 0 3px 1px; font-size: 0.85em; }
+          .print-frac .den { padding: 1px 3px 0; font-size: 0.85em; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${examTitle} - 정답 및 해설</h1>
+          <p>${examSubtitle}</p>
+        </div>
+        <div class="questions">
+          ${questionHTML}
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
@@ -618,7 +765,13 @@ export default function ExamTest({ examId }: ExamTestProps) {
             className="w-full py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-95"
             style={{ background: 'oklch(0.28 0.08 255)', color: 'white' }}>
             <Printer size={14} />
-            인쇄하기
+            시험지 인쇄
+          </button>
+          <button onClick={handleAnswerPrint}
+            className="w-full py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-150 active:scale-95"
+            style={{ background: 'oklch(0.95 0.01 10)', color: 'oklch(0.4 0.1 20)' }}>
+            <Printer size={14} />
+            정답 및 해설 인쇄
           </button>
           {!graded ? (
             <button onClick={handleGrade}
