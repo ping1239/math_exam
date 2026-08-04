@@ -1,6 +1,6 @@
 import { Question, QuestionType } from './examData';
 
-export const EXAM_TITLE = '중학교 2-1 기말 주요 도형 개념 테스트';
+export const EXAM_TITLE = '중학교 2-2 기말 주요 도형 개념 테스트';
 export const EXAM_SUBTITLE = '빈칸 채우기 및 단답형 평가';
 
 export const questions: Question[] = [
