@@ -114,10 +114,10 @@ export const questions: Question[] = [
     text: '다음 중 오른쪽 그림과 같은 두 직각삼각형 ABC와 DEF가 합동이 되는 조건이 아닌 것은?',
     imageUrl: '/assets/images/exam13/q7.png',
     options: [
-      { id: '7-1', label: '①', text: '\\(\\overline{\\text{AB}}\\)=\\(\\overline{\\text{DE}}\\), \\(\\overline{\\text{AC}}\\)=\\(\\overline{\\text{DF'}}\\) },
-      { id: '7-2', label: '②', text: '\\(\\overline{\\text{AC}}\\)=\\(\\overline{\\text{DF}}\\), \\(\\overline{\\text{BC}}\\)=\\(\\overline{\\text{EF'}}\\) },
-      { id: '7-3', label: '③', text: '∠A=∠D, \\(\\overline{\\text{AC}}\\)=\\(\\overline{\\text{DF'}}\\) },
-      { id: '7-4', label: '④', text: '∠B=∠E, \\(\\overline{\\text{AB}}\\)=\\(\\overline{\\text{DE'}}\\) },
+      { id: '7-1', label: '①', text: '\\(\\overline{\\text{AB}}\\)=\\(\\overline{\\text{DE}}\\), \\(\\overline{\\text{AC}}\\)=\\(\\overline{\\text{DF}}\\)' },
+      { id: '7-2', label: '②', text: '\\(\\overline{\\text{AC}}\\)=\\(\\overline{\\text{DF}}\\), \\(\\overline{\\text{BC}}\\)=\\(\\overline{\\text{EF}}\\)' },
+      { id: '7-3', label: '③', text: '∠A=∠D, \\(\\overline{\\text{AC}}\\)=\\(\\overline{\\text{DF}}\\)' },
+      { id: '7-4', label: '④', text: '∠B=∠E, \\(\\overline{\\text{AB}}\\)=\\(\\overline{\\text{DE}}\\)' },
       { id: '7-5', label: '⑤', text: '∠A=∠D, ∠B=∠E' }
     ],
     answer: '⑤',
@@ -182,10 +182,10 @@ export const questions: Question[] = [
     text: '오른쪽 그림에서 점 O가 △ABC의 외심일 때, 다음 중 옳지 않은 것은?',
     imageUrl: '/assets/images/exam13/q11.png',
     options: [
-      { id: '11-1', label: '①', text: '\\(\\overline{\\text{AD}}\\)=\\(\\overline{\\text{BD'}}\\) },
+      { id: '11-1', label: '①', text: '\\(\\overline{\\text{AD}}\\)=\\(\\overline{\\text{BD}}\\)' },
       { id: '11-2', label: '②', text: '∠OAF=∠OCF' },
-      { id: '11-3', label: '③', text: '\\(\\overline{\\text{OA}}\\)=\\(\\overline{\\text{OB}}\\)=\\(\\overline{\\text{OC'}}\\) },
-      { id: '11-4', label: '④', text: '\\(\\overline{\\text{OD}}\\)=\\(\\overline{\\text{OF'}}\\) },
+      { id: '11-3', label: '③', text: '\\(\\overline{\\text{OA}}\\)=\\(\\overline{\\text{OB}}\\)=\\(\\overline{\\text{OC}}\\)' },
+      { id: '11-4', label: '④', text: '\\(\\overline{\\text{OD}}\\)=\\(\\overline{\\text{OF}}\\)' },
       { id: '11-5', label: '⑤', text: '△OBE ≡ △OCE' }
     ],
     answer: '③',

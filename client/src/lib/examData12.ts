@@ -79,7 +79,7 @@ export const questions: Question[] = [
     text: '다음 그림의 두 사면체는 닮은 도형이고 △ABC에 대응하는 면이 △A\'B\'C\'일 때, 다음 중 옳지 않은 것은?',
     imageUrl: '/assets/images/exam12/q5.png',
     options: [
-      { id: '5-1', label: '①', text: '\\(\\overline{\\text{C}}\\)\'D\' = 2\\(\\overline{\\text{CD'}}\\) },
+      { id: '5-1', label: '①', text: '\\(\\overline{\\text{C}}\\)\'D\' = 2\\(\\overline{\\text{CD}}\\)' },
       { id: '5-2', label: '②', text: '\\(\\overline{\\text{B}}\\)\'C\' = 6 cm' },
       { id: '5-3', label: '③', text: '△ABD ∽ △A\'B\'D\'' },
       { id: '5-4', label: '④', text: '\\(\\overline{\\text{AB}}\\) : \\(\\overline{\\text{A}}\\)\'B\' = 1 : 2' },
