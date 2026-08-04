@@ -53,6 +53,12 @@ function parseSegments(text: string): Segment[] {
   while (i < text.length) {
     // Try to match a tag at position i
     let matched = false;
+      const overlineMatch = text.substring(i).match(/^\\\(\\\overline\{\\text\{([^}]+)\}\}\\\)/);
+      if (overlineMatch) {
+        segments.push({ type: 'tag', tagName: 'overline', content: overlineMatch[1] });
+        i += overlineMatch[0].length;
+        continue;
+      }
     if (text[i] === '[') {
       for (const prefix of tagPrefixes) {
         if (text.substring(i + 1, i + 1 + prefix.length) === prefix) {
@@ -132,6 +138,12 @@ function renderMathParts(text: string): React.ReactNode[] {
           <sub key={key++} style={{ fontSize: '0.8em' }}>
             {renderMathParts(content)}
           </sub>
+        );
+      } else if (tagName === 'overline') {
+        parts.push(
+          <span key={key++} style={{ textDecoration: 'overline' }}>
+            {renderMathParts(content)}
+          </span>
         );
       } else if (tagName === 'dot') {
         parts.push(
@@ -386,7 +398,13 @@ export default function ExamTest({ examId }: ExamTestProps) {
             html += `<sup>${renderMathToHTML(content)}</sup>`;
           } else if (tagName === 'sub') {
             html += `<sub>${renderMathToHTML(content)}</sub>`;
-          } else if (tagName === 'dot') {
+          } else if (tagName === 'overline') {
+        parts.push(
+          <span key={key++} style={{ textDecoration: 'overline' }}>
+            {renderMathParts(content)}
+          </span>
+        );
+      } else if (tagName === 'dot') {
             html += `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
           }
         }
@@ -567,6 +585,12 @@ export default function ExamTest({ examId }: ExamTestProps) {
         return `<sup>${renderMathToHTML(content)}</sup>`;
       } else if (tagName === 'sub') {
         return `<sub>${renderMathToHTML(content)}</sub>`;
+      } else if (tagName === 'overline') {
+        parts.push(
+          <span key={key++} style={{ textDecoration: 'overline' }}>
+            {renderMathParts(content)}
+          </span>
+        );
       } else if (tagName === 'dot') {
         return `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
       }
