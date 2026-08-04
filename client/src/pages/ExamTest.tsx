@@ -144,7 +144,7 @@ function renderMathParts(text: string): React.ReactNode[] {
           <span key={key++} style={{ textDecoration: 'overline' }}>
             {renderMathParts(content)}
           </span>
-        );
+          );
       } else if (tagName === 'dot') {
         parts.push(
           <span key={key++} style={{ position: 'relative', display: 'inline-block' }}>
@@ -399,11 +399,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
           } else if (tagName === 'sub') {
             html += `<sub>${renderMathToHTML(content)}</sub>`;
           } else if (tagName === 'overline') {
-        parts.push(
-          <span key={key++} style={{ textDecoration: 'overline' }}>
-            {renderMathParts(content)}
-          </span>
-        );
+            html += `<span style="text-decoration: overline;">${renderMathToHTML(content)}</span>`;
       } else if (tagName === 'dot') {
             html += `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
           }
@@ -586,11 +582,7 @@ export default function ExamTest({ examId }: ExamTestProps) {
       } else if (tagName === 'sub') {
         return `<sub>${renderMathToHTML(content)}</sub>`;
       } else if (tagName === 'overline') {
-        parts.push(
-          <span key={key++} style={{ textDecoration: 'overline' }}>
-            {renderMathParts(content)}
-          </span>
-        );
+          return `<span style="text-decoration: overline;">${renderMathToHTML(content)}</span>`;
       } else if (tagName === 'dot') {
         return `<span style="position: relative; display: inline-block;"><span style="position: absolute; top: -0.6em; left: 0; right: 0; text-align: center; line-height: 1;">·</span><span>${renderMathToHTML(content)}</span></span>`;
       }
