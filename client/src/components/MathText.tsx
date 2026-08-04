@@ -63,6 +63,18 @@ function renderMath(text: string): React.ReactNode[] {
       continue;
     }
 
+    // \(\overline{\text{text}}\)
+    const overlineMatch = remaining.match(/^\\\(\\\overline\{\\text\{([^}]+)\}\}\\\)/);
+    if (overlineMatch) {
+      parts.push(
+        <span key={key++} className="math-overline" style={{ textDecoration: 'overline' }}>
+          {overlineMatch[1]}
+        </span>
+      );
+      remaining = remaining.slice(overlineMatch[0].length);
+      continue;
+    }
+
     // Regular character
     parts.push(remaining[0]);
     remaining = remaining.slice(1);
