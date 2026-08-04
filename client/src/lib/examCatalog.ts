@@ -114,10 +114,20 @@ export const EXAM_CATALOG: ExamMetadata[] = [
   {
     id: 'math-2024-12',
     title: '중학교 2-2 도형의 닮음 실전 TEST (표준)',
-    date: '2024-05-18',
-    status: 'available',
+    subtitle: '도형의 닮음 실전 모의고사',
+    totalScore: 100,
     description: '도형의 닮음 단원 표준 난이도 실전 모의고사 24문항',
-    topic: '도형의 닮음'
+    difficulty: 'medium',
+    questionCount: 24,
+  },
+  {
+    id: 'math-2024-13',
+    title: '중학교 2-2 삼각형의 성질 실전 TEST (표준)',
+    subtitle: '삼각형의 성질 실전 모의고사',
+    totalScore: 100,
+    description: '삼각형의 성질 단원 표준 난이도 실전 모의고사 24문항',
+    difficulty: 'medium',
+    questionCount: 24,
   }
 ];
 
