@@ -9,8 +9,7 @@ export const questions: Question[] = [
     type: 'multiple',
     score: 3,
     topic: '삼각형의 성질',
-    text: '오른쪽 그림의 △ABC는 [bar]AB=[bar]BC인 이등변삼각형이다. ∠B의 외각의 크기가 112°일 때, ∠A의 크기는?',
-    imageUrl: '/assets/images/exam13/q1.png',
+    text: '△ABC는 [bar]AB=[bar]BC인 이등변삼각형이다. ∠B의 외각의 크기가 112°일 때, ∠A의 크기는?',
     options: [
       { id: '1-1', label: '①', text: '44°' },
       { id: '1-2', label: '②', text: '50°' },
@@ -111,8 +110,7 @@ export const questions: Question[] = [
     type: 'multiple',
     score: 3,
     topic: '직각삼각형의 합동',
-    text: '다음 중 오른쪽 그림과 같은 두 직각삼각형 ABC와 DEF가 합동이 되는 조건이 아닌 것은?',
-    imageUrl: '/assets/images/exam13/q7.png',
+    text: '다음 중 직각삼각형 ABC와 DEF가 합동이 되는 조건이 아닌 것은? (단, ∠C=∠F=90°)',
     options: [
       { id: '7-1', label: '①', text: '[bar]AB=[bar]DE, [bar]AC=[bar]DF' },
       { id: '7-2', label: '②', text: '[bar]AC=[bar]DF, [bar]BC=[bar]EF' },
